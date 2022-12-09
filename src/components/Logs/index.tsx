@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { PublicKey } from '@solana/web3.js';
 
 import { TLog } from '../../types';
 
@@ -8,6 +7,7 @@ import { BLACK, GRAY } from '../../constants';
 
 import Button from '../Button';
 import Log from './Log';
+import { ConnectedAccounts } from '../../App';
 
 // =============================================================================
 // Styled Components
@@ -47,7 +47,7 @@ const Row = styled.div`
 // =============================================================================
 
 interface Props {
-  publicKey: PublicKey | null;
+  connectedAccounts: ConnectedAccounts;
   logs: TLog[];
   clearLogs: () => void;
 }
@@ -57,8 +57,8 @@ interface Props {
 // =============================================================================
 
 const Logs = React.memo((props: Props) => {
-  const { publicKey, logs, clearLogs } = props;
-
+  const { connectedAccounts, logs, clearLogs } = props;
+  const { solana } = connectedAccounts;
   return (
     <StyledSection>
       {logs.length > 0 ? (
@@ -72,7 +72,7 @@ const Logs = React.memo((props: Props) => {
         <Row>
           <span>{'>'}</span>
           <PlaceholderMessage>
-            {publicKey ? (
+            {solana ? (
               // connected
               <>
                 Click a button and watch magic happen...{' '}
