@@ -15,6 +15,10 @@ const Button = styled.button`
   border: 0;
   border-radius: 6px;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   &:hover {
     background-color: ${hexToRGB(LIGHT_GRAY, 0.9)};
   }

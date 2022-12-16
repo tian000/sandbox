@@ -1,15 +1,15 @@
 import { Transaction, VersionedTransaction } from '@solana/web3.js';
 
-import { PhantomProvider } from '../types';
+import { PhantomSolanaProvider } from '../types';
 
 /**
  * Signs and sends transaction
- * @param   {PhantomProvider} provider    a Phantom Provider
+ * @param   {PhantomSolanaProvider} provider    a Phantom solana provider
  * @param   {Transaction}     transaction a transaction to sign
  * @returns {Transaction}                 a signed transaction
  */
-const signAndSendTransaction = async (
-  provider: PhantomProvider,
+const signAndSendTransactionOnSolana = async (
+  provider: PhantomSolanaProvider,
   transaction: Transaction | VersionedTransaction
 ): Promise<string> => {
   try {
@@ -21,4 +21,4 @@ const signAndSendTransaction = async (
   }
 };
 
-export default signAndSendTransaction;
+export default signAndSendTransactionOnSolana;
