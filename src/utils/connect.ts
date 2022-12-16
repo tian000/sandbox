@@ -1,17 +1,22 @@
 import { PhantomInjectedProvider, TLog } from '../types';
 import { PublicKey } from '@solana/web3.js';
+import { getEthereumSelectedAddress } from './getEthereumSelectedAddress';
 
 // MULTI-CHAIN PROVIDER TIP: Connect using the ethereum provider first for the best experience
-// use onlyIfTrusted on the solana connect request so we don't double pop up.
+// use onlyIfTrusted on the solana connect request, so we don't double pop up.
 export const connect = async ({ solana, ethereum }: PhantomInjectedProvider, createLog: (log: TLog) => void) => {
+  let wasEthereumConnected: boolean | undefined;
   try {
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-    createLog({
-      providerType: 'ethereum',
-      status: 'success',
-      method: 'eth_requestAccounts',
-      message: `Connected to account ${accounts[0]}`,
-    });
+    wasEthereumConnected = !!await getEthereumSelectedAddress(ethereum);
+    if (!wasEthereumConnected) {
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      createLog({
+        providerType: 'ethereum',
+        status: 'success',
+        method: 'eth_requestAccounts',
+        message: `Connected to account ${accounts[0]}`,
+      });
+    }
   } catch (error) {
     createLog({
       providerType: 'ethereum',
@@ -22,7 +27,13 @@ export const connect = async ({ solana, ethereum }: PhantomInjectedProvider, cre
   }
 
   try {
-    await solana.connect({ onlyIfTrusted: true });
+    if (!wasEthereumConnected && !solana.isConnected) {
+      // If ethereum was not connected then we would have showed the EVM pop up, so we should not show the solana pop up.
+      await solana.connect({ onlyIfTrusted: true });
+    } else if (wasEthereumConnected && !solana.isConnected) {
+      // If ethereum was already connected, then we should show the pop up because the solana provider is not connected.
+      await solana.connect();
+    }
   } catch (error) {
     createLog({
       providerType: 'solana',

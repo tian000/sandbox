@@ -257,36 +257,11 @@ const useProps = (provider: PhantomInjectedProvider | null): Props => {
     [provider, createLog, isEthereumChainIdReady],
   );
 
-  /** Re-connect to Ethereum Chain */
-  const handleReconnect = useCallback(
-    async (chainId: SupportedEVMChainIds) => {
-      // set ethereum provider to the correct chainId
-      const ready = await isEthereumChainIdReady(chainId);
-      if (!ready) return;
-      const { ethereum } = provider;
-      try {
-        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-        createLog({
-          providerType: 'ethereum',
-          status: 'success',
-          method: 'eth_requestAccounts',
-          message: `Connected to account ${accounts[0]}`,
-        });
-      } catch (error) {
-        createLog({
-          providerType: 'ethereum',
-          status: 'error',
-          method: 'eth_requestAccounts',
-          message: error.message,
-        });
-      }
-    },
-    [provider, createLog, isEthereumChainIdReady],
-  );
-
   /**
    * Disconnect from Solana
    * At this time, there is no way to programmatically disconnect from Ethereum
+   * MULTI-CHAIN PROVIDER TIP: You can only disconnect on the solana provider. But after when disconnecting your should use the
+   * multi-chain connect method to reconnect.
    */
   const handleDisconnect = useCallback(async () => {
     if (!provider) return;
@@ -326,11 +301,6 @@ const useProps = (provider: PhantomInjectedProvider | null): Props => {
         onClick: handleSignMessageOnEthereum,
       },
       {
-        chain: 'ethereum',
-        name: 'Reconnect',
-        onClick: handleReconnect,
-      },
-      {
         chain: 'solana',
         name: 'Disconnect',
         onClick: handleDisconnect,
@@ -341,7 +311,6 @@ const useProps = (provider: PhantomInjectedProvider | null): Props => {
     handleSendTransactionOnEthereum,
     handleSignMessageOnSolana,
     handleSignMessageOnEthereum,
-    handleReconnect,
     handleDisconnect,
   ]);
 
