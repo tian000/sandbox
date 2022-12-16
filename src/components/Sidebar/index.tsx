@@ -246,7 +246,9 @@ const Sidebar = React.memo((props: Props) => {
             {connectedMethods
               .filter((method) => method.chain === 'ethereum')
               .map((method, i) => (
-                <Button key={`${method.name}-${i}`} onClick={() => method.onClick(SupportedEVMChainIds.EthereumGoerli)}>
+                <Button data-test-id={`ethereum-goerli-${method.name}`}
+                        key={`${method.name}-${i}`}
+                        onClick={() => method.onClick(SupportedEVMChainIds.EthereumGoerli)}>
                   {method.name}
                 </Button>
               ))}
@@ -262,6 +264,7 @@ const Sidebar = React.memo((props: Props) => {
               .filter((method) => method.chain === 'ethereum')
               .map((method, i) => (
                 <Button
+                  data-test-id={`polygon-mainnet-${method.name}`}
                   key={`${method.name}-${i}`}
                   onClick={() => method.onClick(SupportedEVMChainIds.PolygonMainnet)}
                 >
@@ -279,14 +282,16 @@ const Sidebar = React.memo((props: Props) => {
             {connectedMethods
               .filter((method) => method.chain === 'solana')
               .map((method, i) => (
-                <Button key={`${method.name}-${i}`} onClick={method.onClick}>
+                <Button
+                  data-test-id={`solana-${method.name}`}
+                  key={`${method.name}-${i}`} onClick={method.onClick}>
                   {method.name}
                 </Button>
               ))}
           </>
         ) : (
           // not connected
-          <Button onClick={connect} style={{ marginTop: '15px' }}>
+          <Button data-testid='connect-to-phantom' onClick={connect} style={{ marginTop: '15px' }}>
             Connect to Phantom
           </Button>
         )}
