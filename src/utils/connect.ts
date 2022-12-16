@@ -2,6 +2,7 @@ import { PhantomInjectedProvider, TLog } from '../types';
 import { PublicKey } from '@solana/web3.js';
 
 // MULTI-CHAIN PROVIDER TIP: Connect using the ethereum provider first for the best experience
+// use onlyIfTrusted on the solana connect request so we don't double pop up.
 export const connect = async ({ solana, ethereum }: PhantomInjectedProvider, createLog: (log: TLog) => void) => {
   try {
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
